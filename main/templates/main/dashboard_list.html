@@ -1,0 +1,16 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Dashboards{% endblock %}
+
+{% block content %}
+    <h1 class="text-4xl font-bold my-8">Dashboards</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for dashboard in dashboards %}
+            <a href="{% url 'main:dashboard_detail' dashboard.slug %}" class="block bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold text-white">{{ dashboard.name }}</h2>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

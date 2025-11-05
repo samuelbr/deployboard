@@ -1,0 +1,34 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ dashboard.name }}{% endblock %}
+
+{% block content %}
+    <div class="my-8">
+        <a href="{% url 'main:dashboard_list' %}" class="text-blue-400 hover:text-blue-300 transition-colors duration-300">&larr; Back to dashboards</a>
+    </div>
+    <h1 class="text-4xl font-bold mb-8">{{ dashboard.name }}</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for system in systems %}
+            <div class="bg-gray-800 rounded-lg shadow-lg">
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">{{ system.name }}</h2>
+                    {% if system.latest_deployment %}
+                        <div class="space-y-2">
+                            <p class="text-gray-400"><strong>Git Hash:</strong>
+                                {% if system.latest_deployment.git_link %}
+                                    <a href="{{ system.latest_deployment.git_link }}" target="_blank" class="text-blue-400 hover:text-blue-300 transition-colors duration-300">{{ system.latest_deployment.git_hash }}</a>
+                                {% else %}
+                                    {{ system.latest_deployment.git_hash }}
+                                {% endif %}
+                            </p>
+                            <p class="text-gray-400"><strong>Timestamp:</strong> {{ system.latest_deployment.timestamp }}</p>
+                        </div>
+                    {% else %}
+                        <p class="text-gray-400">No deployments yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
