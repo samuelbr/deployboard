@@ -1,0 +1,44 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ dashboard.name }}{% endblock %}
+
+{% block content %}
+    <div class="my-8">
+        <a href="{% url 'main:dashboard_list' %}" class="text-blue-400 hover:text-blue-300 transition-colors duration-300">&larr; Back to dashboards</a>
+    </div>
+    <h1 class="text-4xl font-bold mb-8">{{ dashboard.name }}</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ systems|length|default:1 }} gap-8">
+        {% for system in systems %}
+            <div>
+                <h2 class="text-3xl font-bold text-white mb-6 border-b-2 border-gray-700 pb-2">{{ system.name }}</h2>
+                {% if system.deployments.all %}
+                    <div class="space-y-6">
+                        {% for deployment in system.deployments.all %}
+                            <div class="bg-gray-800 rounded-lg shadow-lg p-5">
+                                {% if deployment.branch %}
+                                    <p class="text-gray-300 font-semibold text-md mb-2">{{ deployment.branch }}</p>
+                                {% endif %}
+                                <div>
+                                    <p class="text-gray-400 font-mono text-sm">
+                                        <strong>Git Hash:</strong>
+                                        {% if deployment.git_link %}
+                                            <a href="{{ deployment.git_link }}" target="_blank" class="text-blue-400 hover:text-blue-300 transition-colors duration-300 break-all">{{ deployment.git_hash }}</a>
+                                        {% else %}
+                                            <span class="break-all">{{ deployment.git_hash }}</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="mt-4">
+                                    <p class="text-gray-500 text-xs">{{ deployment.timestamp|date:"d.m.Y H:i" }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-gray-400">No deployments yet.</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
