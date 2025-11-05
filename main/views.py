@@ -1,5 +1,5 @@
 import json
-from django.db.models import OuterRef, Subquery
+from django.db.models import Prefetch
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
@@ -44,14 +44,8 @@ def dashboard_list(request):
 def dashboard_detail(request, dashboard_slug):
     dashboard = get_object_or_404(Dashboard, slug=dashboard_slug)
 
-    latest_deployment = Deployment.objects.filter(
-        system=OuterRef('pk')
-    ).order_by('-timestamp')
-
-    systems = dashboard.systems.annotate(
-        latest_deployment_git_hash=Subquery(latest_deployment.values('git_hash')[:1]),
-        latest_deployment_git_link=Subquery(latest_deployment.values('git_link')[:1]),
-        latest_deployment_timestamp=Subquery(latest_deployment.values('timestamp')[:1]),
+    systems = dashboard.systems.prefetch_related(
+        Prefetch('deployments', queryset=Deployment.objects.order_by('-timestamp'))
     ).all()
 
     return render(request, 'main/dashboard_detail.html', {'dashboard': dashboard, 'systems': systems})
