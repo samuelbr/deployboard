@@ -33,6 +33,7 @@ class Deployment(models.Model):
     system = models.ForeignKey(System, related_name='deployments', on_delete=models.CASCADE)
     git_hash = models.CharField(max_length=40)
     git_link = models.URLField(blank=True, null=True)
+    branch = models.CharField(max_length=100, blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

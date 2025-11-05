@@ -17,6 +17,7 @@ def add_deployment(request, dashboard_slug, system_slug):
         data = json.loads(request.body)
         git_hash = data.get('git_hash')
         git_link = data.get('git_link')
+        branch = data.get('branch')
 
         if not git_hash:
             return HttpResponseBadRequest("git_hash is required")
@@ -24,7 +25,8 @@ def add_deployment(request, dashboard_slug, system_slug):
         deployment = Deployment.objects.create(
             system=system,
             git_hash=git_hash,
-            git_link=git_link
+            git_link=git_link,
+            branch=branch
         )
 
         return JsonResponse({
